@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <localRepository>/benwork/mvnrepos</localRepository>
+  <interactiveMode/>
+  <usePluginRegistry/>
+  <offline>false</offline>
+  <pluginGroups/>
+  <servers>
+    <server>
+      <id>nexus-releases</id>
+      <username>deployment</username>
+      <password>teacheredu</password>
+    </server>
+    <server>
+      <id>nexus-snapshots</id>
+      <username>deployment</username>
+      <password>teacheredu</password>
+    </server>
+  </servers>
+  <mirrors/>
+  <proxies/>
+  <profiles>
+
+    <profile>
+      <id>teacheredu.cn</id>
+      <repositories>
+        <!---->
+        <repository>
+          <id>nexus</id>
+          <name>local private nexus</name>
+          <url>http://192.168.1.118:9081/nexus/content/groups/public</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+
+<!--    <repository>
+          <id>bupt</id>
+          <url>http://112.124.28.128:8081/nexus/content/groups/public</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>warn</checksumPolicy>
+          </snapshots>
+        </repository>
+-->
+      </repositories>
+
+      <pluginRepositories><!---->
+        <pluginRepository>
+          <id>nexus</id>
+          <name>local private nexus</name>
+          <url>http://192.168.1.118:9081/nexus/content/groups/public</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+
+      </pluginRepositories>
+
+    </profile>
+
+    <profile>
+      <id>tomcat5x</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <appserver.id>tomcat7x</appserver.id>
+        <appserver.home>/tools/apache-tomcat-7.0.64</appserver.home>
+        <maven.tomcat.home>/tools/apache-tomcat-7.0.64</maven.tomcat.home>
+        <sakai.appserver.home>me>/tools/apache-tomcat-7.0.64</sakai.appserver.home>
+        <surefire.reportFormat>plain</surefire.reportFormat>
+        <surefire.useFile>false</surefire.useFile>
+      </properties>
+    </profile>
+
+  </profiles>
+  <activeProfiles>
+    <activeProfile>teacheredu.cn</activeProfile>
+  </activeProfiles>
+</settings>
