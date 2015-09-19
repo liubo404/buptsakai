@@ -2,9 +2,9 @@
 Build a docker image for deploying sakai from src version.
 
 Notice:
-1. download the java maven tomcat before run the docker build command
-2. change folder names in Dockerfile if you change them after download.
-3. config maven settings.xml to use your repository if you have one.
+-1. download the java maven tomcat before run the docker build command
+-2. change folder names in Dockerfile if you change them after download.
+-3. config maven settings.xml to use your repository if you have one.
 
 
 # download JDK
@@ -32,5 +32,5 @@ tar xzvf apache-tomcat-7.0.64.tar.gz
 # build the docker image
 ```bash
 docker build -t bysakai:0.0.1 .
-``
+```
 just wait it to complete...lucky~
