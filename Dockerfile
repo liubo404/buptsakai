@@ -1,71 +1,62 @@
-FROM debian:latest
+FROM debian
+MAINTAINER libu
 
-MAINTAINER liubo
 
+# create dirs
 RUN mkdir /tools
-RUN mkdir -p /benwork/mvnrepos
-ENV tools /tools
+RUN mkdir -p /workspace/mvnrepos
+ENV TOOL /tools
+ENV WS /workspace
 
 
-#ADD ./tools/*.gz $tools/
-
-#ADD apache-maven-3.3.3-bin.tar.gz $tools/
-#ADD apache-tomcat-7.0.64.tar.gz $tools/
-#ADD jdk-7u79-linux-x64.tar.gz $tools/
-
-
-#######
-
-#RUN tar -xzvf $tools/apache-maven-3.3.3-bin.tar.gz  
-#RUN tar -xzvf $tools/apache-tomcat-7.0.64.tar.gz  
-#RUN tar -xzvf $tools/jdk-7u79-linux-x64.tar.gz
-
-WORKDIR $tools
-
-ADD ./apache-maven-3.3.3 $tools/apache-maven-3.3.3
-ADD ./apache-tomcat-7.0.64 $tools/apache-tomcat-7.0.64
-ADD ./jdk1.7.0_79 $tools/jdk1.7.0_79
+# update system
+RUN rm -rf /etc/apt/sources.list
+ADD ./sources.list /etc/apt/sources.list
+RUN apt-get update -y
 
 
-#RUN rm -rf /tools/apache-maven-3.3.3/conf/settings.xml
-#ADD settings.xml /tools/apache-maven-3.3.3/conf/
-
-#RUN mkdir /tools/apache-tomcat-7.0.64/sakai 
-#ADD sakai.properties  /tools/apache-tomcat-7.0.64/sakai/
-
-
-
-
-RUN echo "export JAVA_HOME=/tools/jdk1.7.0_79" >>~/.bashrc
-RUN echo "export MVN_HOME=/tools/apache-maven-3.3.3" >>~/.bashrc
-RUN echo "export CATALINA_HOME=/tools/apache-tomcat-7.0.64" >>~/.bashrc
-
-RUN echo "export PATH=/tools/jdk1.7.0_79/bin:/tools/apache-maven-3.3.3/bin:$PATH" >>~/.bashrc
-
-#RUN source ~/.bashrc
-
-RUN echo "" >/etc/apt/sources.list
-RUN echo "deb http://ftp.cn.debian.org/debian/ jessie main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb http://ftp.cn.debian.org/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb http://ftp.cn.debian.org/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb-src http://ftp.cn.debian.org/debian/ jessie main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb-src http://ftp.cn.debian.org/debian/ jessie-updates main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb-src http://ftp.cn.debian.org/debian/ jessie-backports main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb http://ftp.cn.debian.org/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list
-RUN echo "deb-src http://ftp.cn.debian.org/debian-security/ jessie/updates main non-free contrib" >> /etc/apt/sources.list
-
-RUN apt-get update
-RUN apt-get install -y wget curl  emacs git subversion libapache2-svn
-
-WORKDIR /benwork
-RUN svn checkout http://123.57.153.60:88/svn/gkc/develop/CODE/iscas/trunk --username liubo --password liubo18766
-RUN cd trunk
-RUN mvn clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=/tools/apache-tomcat-7.0.64 -Dsakai.home=/tools/apache-tomcat-7.0.64/sakai 
+# install tools
+RUN apt-get install -y wget
+RUN apt-get install -y curl
+RUN apt-get install -y emacs
+RUN apt-get install -y git
+RUN apt-get install -y subversion
+RUN apt-get install -y libapache2-svn
 
 
+# add java maven tomcat
+ENV MAVEN  apache-maven-3.3.3
+ENV JDK   jdk1.7.0_79
+ENV TOMCAT apache-tomcat-7.0.64
+ENV JAVA_HOME     $TOOL/$JDK
+ENV MAVEN_HOME    $TOOL/$MAVEN
+ENV CATALINA_HOME $TOOL/$TOMCAT
+
+ADD ./$JDK    $JAVA_HOME
+ADD ./$MAVEN  $MAVEN_HOME
+ADD ./$TOMCAT $CATALINA_HOME
+
+ENV PATH $JAVA_HOME/bin:$MAVEN_HOME/bin:$CATALINA_HOME:$PATH
 
 
+# set env
+RUN echo "export JAVA_HOME=$JAVA_HOME">>~/.bashrc
+RUN echo "export MAVEN_HOME=$MAVEN_HOME">>~/.bashrc
+RUN echo "export CATALINA_HOME=$CATALINA_HOME">>~/.bashrc
+RUN echo "export PATH=$PATH">>~/.bashrc
 
-EXPOSE 8080 
-CMD ["bash","/tools/apache-tomcat-7.0.64/bin/startup.sh"]
- 
+# test java maven version
+RUN java -version
+RUN mvn -version
+
+
+# add sakai src folder
+ADD ./sakai-bupt $WS/sakai-bupt
+
+
+# compile src and deploy to tomcat
+WORKDIR $WS/sakai-bupt
+RUN mvn clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=$CATALINA_HOME -Dsakai.home=$CATALINA_HOME/sakai
+
+EXPOSE 8080
+CMD $CATALINA_HOME/bin/catalina.sh run
