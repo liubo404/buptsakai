@@ -1,1 +1,0 @@
-export JAVA_OPTS="-server -Xmx1028m -XX:MaxPermSize=320m -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false -Djava.awt.headless=true -Dcom.sun.management.jmxremote -Dsun.lang.ClassLoader.allowArraySyntax=true"
