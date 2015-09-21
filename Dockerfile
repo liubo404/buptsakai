@@ -56,8 +56,8 @@ ADD ./sakai-bupt $WS/sakai-bupt
 
 # compile src and deploy to tomcat
 WORKDIR $WS/sakai-bupt
-#RUN mvn clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=$CATALINA_HOME -Dsakai.home=$CATALINA_HOME/sakai
+RUN mvn clean install sakai:deploy -Dmaven.test.skip=true -Dmaven.tomcat.home=$CATALINA_HOME -Dsakai.home=$CATALINA_HOME/sakai
 
 EXPOSE 8080
-#CMD $CATALINA_HOME/bin/catalina.sh run
-CMD ["bash"]
+CMD $CATALINA_HOME/bin/catalina.sh run
+#CMD ["bash"]
