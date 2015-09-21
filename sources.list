@@ -1,0 +1,8 @@
+deb http://ftp.cn.debian.org/debian/ jessie main non-free contrib
+deb http://ftp.cn.debian.org/debian/ jessie-updates main non-free contrib
+deb http://ftp.cn.debian.org/debian/ jessie-backports main non-free contrib
+deb-src http://ftp.cn.debian.org/debian/ jessie main non-free contrib
+deb-src http://ftp.cn.debian.org/debian/ jessie-updates main non-free contrib
+deb-src http://ftp.cn.debian.org/debian/ jessie-backports main non-free contrib
+deb http://ftp.cn.debian.org/debian-security/ jessie/updates main non-free contrib
+deb-src http://ftp.cn.debian.org/debian-security/ jessie/updates main non-free contrib
